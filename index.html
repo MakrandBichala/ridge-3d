@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parallax Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  :root { --gap: clamp(8rem, 22vh, 14rem); --inner: clamp(4rem, 9vh, 7rem); }
+  html { scroll-behavior: smooth; } html, body { background: #0b0b14; font-family: "Helvetica Neue", Arial, sans-serif; }
+
+  /* Hero: tall wrapper, sticky stage inside, so layers animate while you scroll */
+  .hero { height: 220vh; position: relative; }
+  .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #1a1040; }
+
+  .layer { position: absolute; left: -5%; width: 110%; height: 120%; top: 0; will-change: transform; }
+  .layer svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+  .sky { background: linear-gradient(#10062e 0%, #5b2a86 40%, #ff6b4a 78%, #ffd06b 100%); }
+  .sky.dusk { background: linear-gradient(#0b0a2e 0%, #2d2a6e 40%, #9a4a8f 78%, #f08a6a 100%); opacity: 0; }
+  .sky.night { background: linear-gradient(#02020a 0%, #0a0a2a 40%, #1a1a4a 78%, #2c3a6e 100%); opacity: 0; }
+  .sun { position: absolute; left: 50%; top: 52%; width: 22vmin; height: 22vmin; margin-left: -11vmin;
+         border-radius: 50%; background: #fff3c4; box-shadow: 0 0 10vmin 4vmin rgba(255,170,90,.45); will-change: transform; }
+
+  /* Text sits between mountain layers so depth is obvious */
+  .title { position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
+           will-change: transform, opacity; pointer-events: none; }
+  .title h1 { font-size: clamp(3.5rem, 15vw, 14rem); line-height: .88; font-weight: 900; letter-spacing: -.04em;
+              color: #fff; text-transform: uppercase; text-shadow: 0 4px 40px rgba(0,0,0,.45); }
+  .title h1 span { display: block; color: #ffe14d; }
+  .title p { margin-top: 2vh; color: #fff; font-size: clamp(.8rem, 1.6vw, 1.3rem); letter-spacing: .5em; text-transform: uppercase; }
+
+  .hint { position: absolute; bottom: 3vh; left: 0; right: 0; text-align: center; color: #fff;
+          letter-spacing: .3em; font-size: .75rem; text-transform: uppercase; z-index: 10; animation: bob 1.6s infinite; }
+  @keyframes bob { 50% { transform: translateY(8px); } }
+
+
+  #hero3d { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .stage-fade { position: absolute; left: 0; right: 0; bottom: 0; height: 22vh; pointer-events: none;
+                background: linear-gradient(to bottom, rgba(2,2,10,0), rgba(2,2,10,.55) 55%, #02020a); opacity: var(--fade, 0); }
+  /* Nav: full-width bar at top, shrinks to a centred pill on scroll */
+  .nav { position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; width: 100%;
+         display: flex; align-items: center; justify-content: space-between; padding: 22px 4vw; color: #fff;
+         border: 1px solid transparent; }
+  .logo { font-weight: 900; letter-spacing: .12em; font-size: 1.1rem; text-transform: uppercase; white-space: nowrap; }
+  .nav ul { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav a { color: inherit; text-decoration: none; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; }
+  .nav a:hover { color: #ffe14d; }
+  /* "Book" is the call to action: filled gold pill, arrow slides in on hover */
+  .nav a.cta { display: inline-flex; align-items: center; gap: 0; padding: .65rem 1.3rem; border-radius: 999px; background: #e6c27a; color: #14120f; font-weight: 500;
+               box-shadow: 0 6px 20px -8px rgba(230,194,122,.7);
+               transition: background .6s cubic-bezier(.22,.7,.2,1), gap .6s cubic-bezier(.22,.7,.2,1), box-shadow .6s cubic-bezier(.22,.7,.2,1), transform .6s cubic-bezier(.22,.7,.2,1); }
+  .nav a.cta i { font-style: normal; display: inline-block; width: 0; opacity: 0; overflow: hidden; transition: width .6s cubic-bezier(.22,.7,.2,1), opacity .6s; }
+  .nav a.cta:hover { color: #14120f; background: #f3d898; gap: .6rem; transform: translateY(-1px); box-shadow: 0 10px 26px -8px rgba(230,194,122,.9); }
+  .nav a.cta:hover i { width: 1rem; opacity: 1; }
+
+  /* Content sections: alternate left / right, soft tonal edges */
+  body { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; }
+  .plain { position: relative; z-index: 3; padding: calc(var(--gap) / 2) 9vw; background: #f4f1ea; color: #14120f;
+           display: flex; flex-direction: column; --x: -90px; align-items: flex-start; text-align: left; }
+  .plain.right { --x: 90px; align-items: flex-end; text-align: right; }
+  /* Hero night -> pre-dawn mauve -> warm blush -> cream, so the night sky melts into the page */
+  .plain.first { padding-top: 58vh; min-height: calc(58vh + min(78vh, 720px) + var(--gap) / 2);
+    background: linear-gradient(#02020a 0, #0e0d24 6vh, #2b2144 16vh, #6d4a65 28vh, #c79a88 42vh, #ecd9c8 54vh, #f4f1ea 66vh); }
+  .plain.alt { background: linear-gradient(#f4f1ea 0, #ece5d8 12%, #e8e1d3 28%, #e2dac9 48%, rgb(226,218,201) 50.9%, rgb(224,216,199) 53.8%, rgb(219,211,194) 56.7%, rgb(210,203,187) 59.6%, rgb(198,191,176) 62.4%, rgb(183,176,162) 65.3%, rgb(165,158,145) 68.2%, rgb(144,139,127) 71.1%, rgb(123,118,108) 74.0%, rgb(102,97,89) 76.9%, rgb(81,78,71) 79.8%, rgb(63,60,54) 82.7%, rgb(48,45,40) 85.6%, rgb(36,33,29) 88.4%, rgb(27,25,22) 91.3%, rgb(22,20,17) 94.2%, rgb(20,18,15) 97.1%, rgb(20,18,15) 100.0%); }
+  .plain.dark { background: #14120f; color: #f4f1ea; }
+  .plain h2 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 300; font-size: clamp(2.6rem, 7vw, 6.4rem);
+              max-width: 15ch; letter-spacing: -.02em; line-height: .98; }
+  .plain h2 em { font-style: italic; color: #b5543a; }
+  .eyebrow { font-size: .72rem; letter-spacing: .38em; text-transform: uppercase; color: #b5543a; margin-bottom: 4vh; font-weight: 500; }
+  .lead { margin-top: 5vh; max-width: 46ch; font-size: 1.1rem; line-height: 1.8; font-weight: 300; color: #5a554c; }
+  .dark .lead { color: #a39d90; }
+  .cards { display: flex; gap: 1.6rem; margin-top: var(--inner); flex-wrap: wrap; width: 100%; text-align: left; }
+  .card { flex: 1 1 240px; padding: 2.4rem 2.4rem 3.4rem; background: rgba(244,241,234,.7); border: 1px solid rgba(20,18,15,.08); border-radius: 22px; }
+  .card span { color: #b5543a; font-size: .8rem; letter-spacing: .2em; }
+  .card h3 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 400; font-size: 2rem; margin: 1.4rem 0 .7rem; }
+  .card p { color: #5a554c; line-height: 1.7; font-weight: 300; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4vw; width: 100%; margin-top: var(--inner); text-align: center; }
+  .stats b { display: block; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 300; font-size: clamp(3.5rem, 9vw, 7.5rem); letter-spacing: -.03em; color: #e6c27a; line-height: 1; }
+  .stats h4 { margin-top: 2rem; font-size: .8rem; font-weight: 500; letter-spacing: .25em; text-transform: uppercase; color: #f4f1ea; }
+  .stats p { margin: 1.1rem auto 0; max-width: 28ch; color: #a39d90; font-weight: 300; line-height: 1.7; }
+  .stats > div { padding-top: 2.2rem; border-top: 1px solid rgba(230,194,122,.35); }
+  @media (max-width: 760px) { .stats { grid-template-columns: 1fr; gap: 3.5rem; } }
+
+
+
+  /* ---- Dark sections: treks, profile, stories, booking, footer ---- */
+  .plain.dark { background: #14120f; }
+  .plain.center { --x: 0px; align-items: center; text-align: center; }
+  .plain.center h2 { max-width: 12ch; }
+  .plain.dark .eyebrow { color: #e6c27a; }
+  .plain.dark h2 em { color: #e6c27a; }
+
+  .treks { list-style: none; width: 100%; margin-top: var(--inner); }
+  .trek { display: grid; grid-template-columns: 3.5rem 1fr 7rem 7rem 8rem 2.5rem; align-items: center; gap: 1.5rem;
+          padding: clamp(2.6rem, 5vw, 3.8rem) 0; cursor: pointer; position: relative; text-align: left; }
+  /* hairline between rows; a gold one draws across it on hover */
+  .trek::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(244,241,234,.14); }
+  .trek .rule { position: absolute; left: 0; bottom: 0; height: 1px; width: 100%; background: #e6c27a; transform: scaleX(0); transform-origin: left; z-index: 1;
+                transition: transform 1.1s cubic-bezier(.22,.7,.2,1); }
+  .trek .glow { position: absolute; inset: 0 -2.2rem; background: linear-gradient(90deg, rgba(230,194,122,.07), rgba(230,194,122,0) 85%); border-radius: 16px;
+                opacity: 0; transition: opacity .9s cubic-bezier(.22,.7,.2,1); pointer-events: none; }
+  .trek > *, .trek h3 { transition: opacity .8s cubic-bezier(.22,.7,.2,1), translate .9s cubic-bezier(.22,.7,.2,1), color .8s cubic-bezier(.22,.7,.2,1); }
+  .trek .n { color: #e6c27a; font-size: .8rem; letter-spacing: .2em; }
+  .trek h3 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 300; font-size: clamp(1.9rem, 3.6vw, 3.2rem); line-height: 1.05; }
+  .trek small { display: block; margin-top: .7rem; color: #8d877a; letter-spacing: .08em; }
+  .trek .m { color: #c9c3b6; font-weight: 300; font-size: .95rem; }
+  .trek .go { font-size: 1.6rem; color: #e6c27a; opacity: .3; }
+  @media (hover: hover) {
+    .treks:hover .trek:not(:hover) > :not(.glow):not(.rule) { opacity: .38; }       /* hovered row stays bright, the others recede */
+    .trek:hover .glow { opacity: 1; } .trek:hover .rule { transform: scaleX(1); }
+    .trek:hover h3 { translate: 18px 0; color: #fff; }
+    .trek:hover .n { translate: 6px 0; }
+    .trek:hover .m { translate: 4px 0; color: #f4f1ea; }
+    .trek:hover .go { translate: 10px 0; opacity: 1; }
+  }
+  @media (max-width: 860px) { .trek { grid-template-columns: 2rem 1fr auto; } .trek .m:nth-of-type(n+2), .trek .lvl { display: none; } .trek .go { display: none; } }
+
+  .profile { width: 100%; margin-top: var(--inner); }
+  #elev { width: 100%; height: auto; overflow: visible; }
+  #elev .line { fill: none; stroke: #e6c27a; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  #elev .area { fill: url(#fillg); opacity: 0; transition: opacity 2s ease 1.2s; }
+  #elev.go .area { opacity: 1; }
+  #elev .pt { fill: #14120f; stroke: #e6c27a; stroke-width: 2; opacity: 0; transition: opacity .9s ease; }
+  #elev text { fill: #a39d90; font-size: 15px; font-family: Inter, sans-serif; opacity: 0; transition: opacity .9s ease; text-anchor: middle; }
+  #elev text.alt { fill: #f4f1ea; font-size: 17px; }
+  #elev .base { stroke: rgba(244,241,234,.12); }
+
+  .quotes { display: flex; gap: 2rem; margin-top: var(--inner); flex-wrap: wrap; }
+  blockquote { flex: 1 1 280px; padding-top: 1.6rem; border-top: 1px solid rgba(230,194,122,.5); text-align: left; }
+  blockquote p { font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.7rem; line-height: 1.35; font-weight: 300; }
+  cite { display: block; margin-top: 1.6rem; font-style: normal; color: #e6c27a; font-size: .75rem; letter-spacing: .25em; text-transform: uppercase; }
+
+  .book { display: grid; grid-template-columns: 1fr 1fr; gap: 2.2rem 2.5rem; width: min(760px, 100%); margin-top: var(--inner); text-align: left; }
+  .book label { display: block; font-size: .7rem; letter-spacing: .25em; text-transform: uppercase; color: #8d877a; }
+  .book input, .book select { width: 100%; margin-top: .8rem; padding: .7rem 0; background: transparent; border: 0; border-bottom: 1px solid rgba(244,241,234,.25);
+                              color: #f4f1ea; font: 300 1.2rem Inter, sans-serif; outline: none; border-radius: 0; transition: border-color .5s; }
+  .book select option { color: #111; }
+  .book input:focus, .book select:focus { border-color: #e6c27a; }
+  .book button { grid-column: 1 / -1; justify-self: center; margin-top: 1rem; display: inline-flex; align-items: center; gap: 1rem; cursor: pointer;
+                 padding: 1.1rem 2.4rem; border-radius: 999px; border: 1px solid #e6c27a; background: transparent; color: #e6c27a;
+                 font: 500 .8rem Inter, sans-serif; letter-spacing: .25em; text-transform: uppercase;
+                 transition: background .6s cubic-bezier(.22,.7,.2,1), color .6s, gap .6s; }
+  .book button:hover { background: #e6c27a; color: #14120f; gap: 1.6rem; }
+  .thanks { grid-column: 1 / -1; text-align: center; color: #e6c27a; font-family: "Cormorant Garamond", serif; font-size: 1.6rem; }
+  @media (max-width: 640px) { .book { grid-template-columns: 1fr; } }
+
+  .foot { position: relative; z-index: 3; background: #14120f; color: #f4f1ea; padding: calc(var(--gap) / 2) 9vw 4vh; overflow: hidden; border-top: 1px solid rgba(244,241,234,.1); }
+  .foot-top { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .foot ul { display: flex; gap: 2rem; list-style: none; } .foot a { color: #a39d90; text-decoration: none; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; transition: color .5s; }
+  .foot a:hover { color: #e6c27a; } .foot-top p { color: #a39d90; font-size: .9rem; }
+  .wordmark { display: block; width: 100%; height: auto; margin-top: 6vh; overflow: visible; }
+  .wm { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 300; font-size: 305px; letter-spacing: -6px; text-anchor: middle; }
+  /* outline draws itself, fill breathes in, then a slow highlight travels along the letters */
+  .wm-base { fill: rgba(230,194,122,0); stroke: rgba(230,194,122,.42); stroke-width: 1.2; stroke-dasharray: 1300; stroke-dashoffset: 1300;
+             transition: stroke-dashoffset 4.2s cubic-bezier(.45,.05,.2,1), fill 2.4s ease 3s; }
+  .wm-shine { fill: none; stroke: url(#shine); stroke-width: 2; opacity: 0; transition: opacity 2.4s ease 4s; }
+  .wordmark.on .wm-base { stroke-dashoffset: 0; fill: rgba(230,194,122,.05); }
+  .wordmark.on .wm-shine { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .wm-base { stroke-dashoffset: 0; transition: none; } .wm-shine { display: none; } }
+  .fine { margin-top: 4vh; text-align: center; color: #6d675c; font-size: .75rem; letter-spacing: .15em; }
+
+  /* Card hover: lifts, grows a touch, soft shadow + light that follows the cursor.
+     Uses translate/scale (not transform) so it never fights the scroll reveal. */
+  .card { position: relative; overflow: hidden; }
+  .card.reveal { transition: opacity 1.3s cubic-bezier(.22,.7,.2,1) var(--d,0s), transform 1.6s cubic-bezier(.22,.7,.2,1) var(--d,0s), filter 1.3s cubic-bezier(.22,.7,.2,1) var(--d,0s),
+                 translate .7s cubic-bezier(.22,.7,.2,1), scale .7s cubic-bezier(.22,.7,.2,1), box-shadow .7s cubic-bezier(.22,.7,.2,1), background-color .7s cubic-bezier(.22,.7,.2,1), border-color .7s cubic-bezier(.22,.7,.2,1); }
+  .card::before { content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity .7s cubic-bezier(.22,.7,.2,1); pointer-events: none;
+                  background: radial-gradient(420px circle at var(--mx,50%) var(--my,50%), rgba(181,84,58,.14), transparent 60%); }
+  .card h3, .card span { transition: translate .7s cubic-bezier(.22,.7,.2,1), color .7s cubic-bezier(.22,.7,.2,1); }
+  .card::after { content: ""; position: absolute; left: 2.4rem; bottom: 1.6rem; height: 1px; width: 0; background: #b5543a;
+                 transition: width .9s cubic-bezier(.22,.7,.2,1); }
+  @media (hover: hover) {
+    .card.in:hover { translate: 0 -14px; scale: 1.035; background-color: rgba(250,248,243,.95); border-color: rgba(181,84,58,.25);
+                     box-shadow: 0 30px 60px -25px rgba(60,35,20,.35), 0 12px 24px -16px rgba(60,35,20,.2); }
+    .card:hover::before { opacity: 1; }
+    .card:hover::after { width: calc(100% - 4.8rem); }
+    .card:hover h3 { translate: 0 -3px; }
+    .card:hover span { translate: 4px 0; }
+  }
+
+
+  /* 3D mountain beside the Journey text */
+  .scene3d { position: absolute; right: 3vw; top: 58vh; width: min(52vw, 760px); height: min(78vh, 720px); pointer-events: auto; }
+  .scene3d canvas { width: 100% !important; height: 100% !important; display: block; cursor: grab; touch-action: pan-y; }
+  .scene3d canvas:active { cursor: grabbing; }
+  @media (max-width: 860px) { .plain.first { min-height: 0; } .scene3d { position: relative; right: auto; top: auto; width: 100%; height: 60vh; order: 5; margin-top: 6vh; } }
+
+  /* Reveal: drifts in from the side, un-blurs and fades. Long, gentle ease-out so nothing snaps. */
+  .reveal { opacity: 0; filter: blur(5px); transform: translate3d(var(--x), 18px, 0);
+            transition: opacity 1.3s cubic-bezier(.22,.7,.2,1) var(--d,0s),
+                        transform 1.6s cubic-bezier(.22,.7,.2,1) var(--d,0s),
+                        filter 1.3s cubic-bezier(.22,.7,.2,1) var(--d,0s);
+            }
+  .reveal.in { opacity: 1; filter: blur(0); transform: none; }
+  .reveal.reset, .wordmark.reset .wm { transition: none !important; }
+  .reveal.done { filter: none; will-change: auto; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; filter: none; transform: none; transition: none; } }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="logo">Ridge</div>
+  <ul><li><a href="#journey">Journey</a></li><li><a href="#treks">Treks</a></li><li><a href="#stories">Stories</a></li><li><a class="cta" href="#book">Book<i>→</i></a></li></ul>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="stage">
+    <canvas id="hero3d"></canvas>
+    <div class="stage-fade"></div>
+    <div class="hint">↓ Scroll</div>
+  </div>
+</section>
+
+<section class="plain left first" id="journey">
+  <div class="scene3d reveal" id="scene3d" style="--d:.3s"></div>
+  <p class="eyebrow reveal">01 — The Journey</p>
+  <h2 class="reveal" style="--d:.1s">Every climb starts in the <em>quiet</em> before dawn.</h2>
+  <p class="lead reveal" style="--d:.2s">We design slow, deliberate experiences for people who would rather take the long way up. No shortcuts, no noise, just the view at the end.</p>
+</section>
+
+<section class="plain alt right">
+  <p class="eyebrow reveal">02 — What We Do</p>
+  <h2 class="reveal" style="--d:.1s">Three ways to reach the <em>summit</em>.</h2>
+  <div class="cards">
+    <article class="card reveal" style="--d:.1s"><span>01</span><h3>Guided Treks</h3><p>Small groups, local guides and routes that avoid the crowds.</p></article>
+    <article class="card reveal" style="--d:.25s"><span>02</span><h3>Night Camps</h3><p>Sleep above the clouds with warm gear and a sky full of stars.</p></article>
+    <article class="card reveal" style="--d:.45s"><span>03</span><h3>Photo Expeditions</h3><p>Reach the best light at the best hour, every single time.</p></article>
+  </div>
+</section>
+
+<section class="plain dark center" id="numbers">
+  <p class="eyebrow reveal">03 — By the Numbers</p>
+  <div class="stats">
+    <div class="reveal" style="--d:.05s"><b data-count="5364">0</b><h4>Metres at Everest Base Camp</h4><p>Our highest camp, reached on day eight with rest days built in to adjust to the thin air.</p></div>
+    <div class="reveal" style="--d:.2s"><b data-count="12">0</b><h4>Routes mapped by hand</h4><p>Walked, timed and checked every season by guides who live in the valleys.</p></div>
+    <div class="reveal" style="--d:.35s"><b data-count="98" data-suffix="%">0</b><h4>Of groups reach the summit</h4><p>Small groups, steady pacing and a guide for every six trekkers.</p></div>
+  </div>
+</section>
+
+<section class="plain dark left" id="treks">
+  <p class="eyebrow reveal">04 — The Treks</p>
+  <h2 class="reveal" style="--d:.1s">Choose your <em>ridge</em>.</h2>
+  <ul class="treks" style="border-top:1px solid rgba(244,241,234,.14)">
+    <li class="trek reveal" style="--x:-90px"><i class="glow"></i><i class="rule"></i><span class="n">01</span><div class="tn"><h3>Annapurna Sanctuary</h3><small>Nepal · Teahouse trek</small></div><span class="m">9 days</span><span class="m">4,130 m</span><span class="m lvl">Moderate</span><span class="go">→</span></li>
+    <li class="trek reveal" style="--x:90px"><i class="glow"></i><i class="rule"></i><span class="n">02</span><div class="tn"><h3>Everest Base Camp</h3><small>Nepal · Teahouse trek</small></div><span class="m">12 days</span><span class="m">5,364 m</span><span class="m lvl">Challenging</span><span class="go">→</span></li>
+    <li class="trek reveal" style="--x:-90px"><i class="glow"></i><i class="rule"></i><span class="n">03</span><div class="tn"><h3>Langtang Valley</h3><small>Nepal · Quiet valley</small></div><span class="m">7 days</span><span class="m">3,870 m</span><span class="m lvl">Easy</span><span class="go">→</span></li>
+    <li class="trek reveal" style="--x:90px"><i class="glow"></i><i class="rule"></i><span class="n">04</span><div class="tn"><h3>Upper Mustang</h3><small>Nepal · Hidden kingdom</small></div><span class="m">10 days</span><span class="m">3,840 m</span><span class="m lvl">Moderate</span><span class="go">→</span></li>
+  </ul>
+</section>
+
+<section class="plain dark right" id="climb">
+  <p class="eyebrow reveal">05 — Day by Day</p>
+  <h2 class="reveal" style="--d:.1s">Annapurna Sanctuary, <em>in nine days</em>.</h2>
+  <div class="profile reveal" style="--d:.2s"><svg id="elev" viewBox="0 0 1000 340" preserveAspectRatio="xMidYMid meet"></svg></div>
+</section>
+
+<section class="plain dark left" id="stories">
+  <p class="eyebrow reveal">06 — Stories</p>
+  <h2 class="reveal" style="--d:.1s">Told by those who <em>climbed</em>.</h2>
+  <div class="quotes">
+    <blockquote class="reveal" style="--d:.1s"><p>“Our guide knew every stone on the path. I have never felt so looked after, or so small in the best way.”</p><cite>Maya R. · Annapurna</cite></blockquote>
+    <blockquote class="reveal" style="--d:.3s"><p>“Sunrise at base camp was worth every step. The whole trip felt calm, never rushed.”</p><cite>Daniel K. · Everest</cite></blockquote>
+    <blockquote class="reveal" style="--d:.5s"><p>“Quiet trails, warm teahouses, honest people. It reset something in me.”</p><cite>Aiko T. · Langtang</cite></blockquote>
+  </div>
+</section>
+
+<section class="plain dark center" id="book">
+  <p class="eyebrow reveal">07 — Begin</p>
+  <h2 class="reveal" style="--d:.1s">Ready when <em>you</em> are.</h2>
+  <p class="lead reveal" style="--d:.2s">Tell us where and when. We will reply within a day with a route, a price and a plan.</p>
+  <form class="book reveal" id="bookform" style="--d:.3s">
+    <label>Your name<input required name="name" autocomplete="name"></label>
+    <label>Email<input required type="email" name="email" autocomplete="email"></label>
+    <label>Trek<select name="trek"><option>Annapurna Sanctuary</option><option>Everest Base Camp</option><option>Langtang Valley</option><option>Upper Mustang</option></select></label>
+    <label>Month<select name="month"><option>March</option><option>April</option><option>May</option><option>October</option><option>November</option></select></label>
+    <button type="submit"><span>Request a plan</span><i>→</i></button>
+    <p class="thanks" id="thanks" hidden>Thank you. We will be in touch within a day.</p>
+  </form>
+</section>
+
+<footer class="foot">
+  <div class="foot-top">
+    <div class="logo">Ridge</div>
+    <ul><li><a href="#journey">Journey</a></li><li><a href="#treks">Treks</a></li><li><a href="#stories">Stories</a></li><li><a href="#book">Book</a></li></ul>
+    <p>hello@ridge.example</p>
+  </div>
+  <svg class="wordmark" id="wordmark" viewBox="0 0 1000 300" aria-hidden="true">
+    <defs>
+      <linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1000" y2="0">
+        <stop offset="0" stop-color="#e6c27a" stop-opacity="0"/><stop offset=".4" stop-color="#e6c27a" stop-opacity="0"/>
+        <stop offset=".5" stop-color="#fff1c9" stop-opacity="1"/><stop offset=".6" stop-color="#e6c27a" stop-opacity="0"/><stop offset="1" stop-color="#e6c27a" stop-opacity="0"/>
+        <animateTransform attributeName="gradientTransform" type="translate" from="-1100 0" to="1100 0" dur="9s" repeatCount="indefinite"/>
+      </linearGradient>
+    </defs>
+    <text class="wm wm-base" x="500" y="248">RIDGE</text>
+    <text class="wm wm-shine" x="500" y="248">RIDGE</text>
+  </svg>
+  <p class="fine">© 2026 Ridge Expeditions. Demo content.</p>
+</footer>
+
+<script>
+  const nav = document.getElementById("nav"), hero = document.getElementById("hero");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // fade the last bit of the hero into the dark section below as the scroll nears the end
+  const stageFade = () => hero.style.setProperty("--fade", Math.min(1, Math.max(0, (scrollY / (hero.offsetHeight - innerHeight) - 0.7) / 0.3)));
+  addEventListener("scroll", stageFade, { passive: true }); stageFade();
+
+  // Navbar: a smoothed value chases the scroll target, so it glides and settles softly
+  let navN = 0;
+  function navTick() {
+    const target = Math.min(scrollY / 300, 1);
+    if (navN === target) return requestAnimationFrame(navTick);     // settled: write nothing
+    navN += (target - navN) * 0.09;
+    if (Math.abs(target - navN) < 0.0005) navN = target;
+    const n = navN, L = (a, b) => a + (b - a) * n;
+    nav.style.width = L(innerWidth, Math.min(680, innerWidth * 0.94)) + "px";
+    nav.style.top = L(0, 16) + "px";
+    nav.style.padding = `${L(22, 16)}px ${L(innerWidth * 0.04, 34)}px`;
+    nav.style.borderRadius = L(0, 999) + "px";
+    nav.style.background = `rgba(14,10,34,${L(0, 0.82)})`;
+        nav.style.borderColor = `rgba(255,255,255,${L(0, 0.18)})`;
+    requestAnimationFrame(navTick);
+  }
+  navTick();
+
+
+  // Stat numbers count up once, softly, when revealed
+  const counter = new IntersectionObserver(es => es.forEach(e => {
+    const el = e.target;
+    if (!e.isIntersecting) { el._run = 0; el.textContent = "0"; return; }                    // left view: reset
+    if (e.intersectionRatio < 0.6 || el._run) return;
+    const run = el._run = Math.random(), end = +el.dataset.count, suf = el.dataset.suffix || "", t0 = performance.now(), D = 2200;
+    (function step(now) { if (el._run !== run) return; const p = Math.min((now - t0) / D, 1), v = Math.round(end * (1 - Math.pow(1 - p, 3)));
+      el.textContent = v.toLocaleString() + suf; if (p < 1) requestAnimationFrame(step); })(t0);
+  }), { threshold: [0, 0.6] });
+  document.querySelectorAll("[data-count]").forEach(el => counter.observe(el));
+
+  // Elevation profile: the line draws itself, then each stop appears in turn
+  (function () {
+    const days = [["Pokhara", 1070], ["Ghorepani", 2874], ["Tadapani", 2630], ["Chomrong", 2170], ["Himalaya", 2920], ["M. Base Camp", 3700], ["Annapurna BC", 4130], ["Bamboo", 2310], ["Jhinu", 1780]];
+    const svg = document.getElementById("elev"), W = 1000, Ht = 340, pad = 50, top = 70, bot = 270, max = 4400, min = 800;
+    const X = i => pad + i * (W - 2 * pad) / (days.length - 1), Y = a => bot - (a - min) / (max - min) * (bot - top);
+    const P = days.map((d, i) => [X(i), Y(d[1])]);
+    let d = `M${P[0][0]} ${P[0][1]}`;
+    for (let i = 1; i < P.length; i++) { const [x0, y0] = P[i - 1], [x1, y1] = P[i], mx = (x0 + x1) / 2; d += ` C${mx} ${y0} ${mx} ${y1} ${x1} ${y1}`; }
+    let h = `<defs><linearGradient id="fillg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6c27a" stop-opacity=".28"/><stop offset="1" stop-color="#e6c27a" stop-opacity="0"/></linearGradient></defs>`;
+    h += `<line class="base" x1="${pad}" x2="${W - pad}" y1="${bot}" y2="${bot}"/><path class="area" d="${d} L${P.at(-1)[0]} ${bot} L${P[0][0]} ${bot} Z"/><path class="line" id="elevline" d="${d}"/>`;
+    days.forEach((dd, i) => { h += `<circle class="pt" cx="${P[i][0]}" cy="${P[i][1]}" r="6"/><text class="alt" x="${P[i][0]}" y="${P[i][1] - 18}">${dd[1].toLocaleString()} m</text><text x="${P[i][0]}" y="${bot + 28}">Day ${i + 1}</text><text x="${P[i][0]}" y="${bot + 48}">${dd[0]}</text>`; });
+    svg.innerHTML = h;
+    const line = svg.querySelector("#elevline"), len = line.getTotalLength();
+    line.style.strokeDasharray = len; line.style.strokeDashoffset = len;
+    let timers = [], playing = false;
+    const reset = () => { timers.forEach(clearTimeout); timers = []; playing = false; svg.classList.remove("go");
+      line.style.transition = "none"; line.style.strokeDashoffset = len;
+      svg.querySelectorAll(".pt, text").forEach(n => { n.style.transition = "none"; n.style.opacity = 0; }); };
+    const play = () => { playing = true; void svg.getBoundingClientRect();
+      svg.querySelectorAll(".pt, text").forEach(n => { n.style.transition = ""; n.style.opacity = ""; });
+      svg.classList.add("go"); line.style.transition = "stroke-dashoffset 5.5s cubic-bezier(.45,.05,.3,1)"; line.style.strokeDashoffset = 0;
+      svg.querySelectorAll(".pt").forEach((c, i) => { const delay = 5500 * (i / (days.length - 1)) * 0.92;
+        timers.push(setTimeout(() => { c.style.opacity = 1; const t = svg.querySelectorAll("text"); [t[i * 3], t[i * 3 + 1], t[i * 3 + 2]].forEach(n => n.style.opacity = 1); }, delay)); }); };
+    new IntersectionObserver(es => { const e = es[0];
+      if (!e.isIntersecting) { if (playing) reset(); } else if (e.intersectionRatio >= 0.35 && !playing) play();
+    }, { threshold: [0, 0.35] }).observe(svg);
+  })();
+
+  // Footer wordmark: start the draw-in when it scrolls into view
+  new IntersectionObserver(es => { const el = es[0].target;
+    if (es[0].intersectionRatio >= 0.3 && !el.classList.contains("on")) { el.classList.remove("reset"); void el.getBoundingClientRect(); el.classList.add("on"); }
+    else if (!es[0].isIntersecting && el.classList.contains("on")) { el.classList.add("reset"); el.classList.remove("on"); }
+  }, { threshold: [0, 0.3] }).observe(document.getElementById("wordmark"));
+
+  // Booking form (demo: no server)
+  document.getElementById("bookform").addEventListener("submit", e => {
+    e.preventDefault(); e.target.querySelector("button").style.display = "none"; document.getElementById("thanks").hidden = false;
+  });
+
+  // Card hover light follows the cursor
+  document.querySelectorAll(".card").forEach(c => c.addEventListener("pointermove", e => {
+    const b = c.getBoundingClientRect();
+    c.style.setProperty("--mx", (e.clientX - b.left) + "px"); c.style.setProperty("--my", (e.clientY - b.top) + "px");
+  }));
+
+  // Scroll reveal: add .in once an element is ~12% inside the viewport
+  // Reveal replays every time: it resets (instantly, while off-screen) and plays again on the next entry
+  const io = new IntersectionObserver(es => es.forEach(e => { const el = e.target;
+    if (e.intersectionRatio >= 0.12 && !el.classList.contains("in")) { el.classList.remove("reset"); void el.offsetWidth; el.classList.add("in"); }
+    else if (!e.isIntersecting && el.classList.contains("in")) { el.classList.add("reset"); el.classList.remove("in", "done"); } }),
+    { threshold: [0, 0.12], rootMargin: "0px 0px -6% 0px" });
+  document.querySelectorAll(".reveal").forEach(el => { io.observe(el);
+    el.addEventListener("transitionend", e => { if (e.propertyName === "transform" && el.classList.contains("in")) el.classList.add("done"); }); });
+
+</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module" src="hero.js"></script>
+<script type="module">
+  import * as THREE from "three";
+  import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+  const box = document.getElementById("scene3d");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;   // keeps the snow bright without clipping
+  box.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
+  camera.position.set(0, 3.1, 7.2); camera.lookAt(0, 0.55, 0);
+  scene.add(new THREE.HemisphereLight(0xfff8f0, 0x8a7e6c, 1.35));
+  const key = new THREE.DirectionalLight(0xffe6c8, 2.2); key.position.set(3, 5, 2); scene.add(key);
+
+  const world = new THREE.Group(); scene.add(world);           // everything that rotates
+  const terracotta = 0xc8553a;
+
+  // trail drawn from base to summit, looping
+  let trail, dot, ring, curve, tubeIdx = 0;
+  const SEG = 600, RAD = 6;
+  fetch("assets/path.json").then(r => r.json()).then(p => {
+    curve = new THREE.CatmullRomCurve3(p.map(v => new THREE.Vector3(...v)));
+    const g = new THREE.TubeGeometry(curve, SEG, 0.013, RAD, false);
+    tubeIdx = g.index.count;
+    trail = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: terracotta, transparent: true }));
+    dot = new THREE.Mesh(new THREE.SphereGeometry(0.04, 16, 16), new THREE.MeshBasicMaterial({ color: 0xffe6a8, transparent: true }));
+    const top = curve.getPoint(1);
+    ring = new THREE.Mesh(new THREE.RingGeometry(0.9, 1, 48), new THREE.MeshBasicMaterial({ color: 0xe6c27a, transparent: true, opacity: 0, side: THREE.DoubleSide }));
+    ring.rotation.x = -Math.PI / 2; ring.position.copy(top).add(new THREE.Vector3(0, 0.02, 0));
+    world.add(trail, dot, ring);
+  });
+
+  new GLTFLoader().load("assets/mountain.glb", g => { g.scene.traverse(o => { if (o.isMesh) o.material.flatShading = true; }); world.add(g.scene); });
+
+  const ease = t => t * t * (3 - 2 * t);
+  const T_DRAW = 11, T_HOLD = 2.6, T_FADE = 2.2, T_GAP = 1.2, LOOP = T_DRAW + T_HOLD + T_FADE + T_GAP;
+
+  function resize() {
+    const w = box.clientWidth, h = box.clientHeight; if (!w || !h) return;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+  addEventListener("resize", resize); resize();
+
+  let visible = true; new IntersectionObserver(e => visible = e[0].isIntersecting).observe(box);
+  const clock = new THREE.Clock(); let rot = 0.6, vel = 0, tilt = 0, dragging = false, lx = 0, ly = 0;
+  const cv = renderer.domElement;
+  cv.addEventListener("pointerdown", e => { dragging = true; lx = e.clientX; ly = e.clientY; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener("pointermove", e => { if (!dragging) return;
+    const dx = e.clientX - lx, dy = e.clientY - ly; lx = e.clientX; ly = e.clientY;
+    rot += dx * 0.01; vel = dx * 0.01; tilt = Math.max(-0.3, Math.min(0.3, tilt + dy * 0.004)); });
+  const end = () => dragging = false;
+  cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
+
+  (function frame() {
+    requestAnimationFrame(frame);
+    const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
+    if (!visible) return;
+    if (!dragging) { vel *= 0.95; rot += vel + (reduce ? 0 : dt * 0.24); tilt *= 0.97; }   // inertia, then the slow turn resumes
+    world.rotation.y = rot; world.rotation.x = tilt;
+    world.position.y = Math.sin(t * 0.8) * 0.04;                  // barely-there float
+
+    if (trail) {
+      const c = reduce ? T_DRAW + 0.1 : t % LOOP;
+      let draw = 0, fade = 1, ringT = -1;
+      if (c < T_DRAW) draw = ease(c / T_DRAW);
+      else { draw = 1; if (c < T_DRAW + T_HOLD) ringT = (c - T_DRAW) / T_HOLD;
+             else fade = Math.max(0, 1 - (c - T_DRAW - T_HOLD) / T_FADE); }
+      if (c > T_DRAW + T_HOLD + T_FADE) draw = 0;
+      trail.geometry.setDrawRange(0, Math.floor(draw * SEG) * RAD * 6);
+      trail.material.opacity = fade;
+      dot.visible = draw > 0 && draw < 1; dot.position.copy(curve.getPoint(Math.min(draw, 1)));
+      dot.scale.setScalar(1 + Math.sin(t * 6) * 0.15);
+      ring.material.opacity = ringT < 0 ? 0 : (1 - ringT) * 0.7;   // soft summit pulse
+      if (ringT >= 0) ring.scale.setScalar(0.12 + ringT * 0.5);
+    }
+    renderer.render(scene, camera);
+  })();
+</script>
+</body>
+</html>
