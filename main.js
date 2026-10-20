@@ -32,10 +32,11 @@ window.scrollTo(0, 0);
   // Stat numbers count up once, softly, when revealed
   const counter = new IntersectionObserver(es => es.forEach(e => {
     const el = e.target;
-    if (!e.isIntersecting) { el._run = 0; el.textContent = "0"; return; }                    // left view: reset
+    const end = +el.dataset.count, suf = el.dataset.suffix || "", from = end >= 1000 ? Math.round(end * 0.75) : 0;   // big numbers start close to the target
+    if (!e.isIntersecting) { el._run = 0; el.textContent = from.toLocaleString() + suf; return; }                    // left view: reset
     if (e.intersectionRatio < 0.6 || el._run) return;
-    const run = el._run = Math.random(), end = +el.dataset.count, suf = el.dataset.suffix || "", t0 = performance.now(), D = 3200;
-    (function step(now) { if (el._run !== run) return; const p = Math.min((now - t0) / D, 1), v = Math.round(end * (1 - Math.pow(1 - p, 3)));
+    const run = el._run = Math.random(), t0 = performance.now(), D = end >= 1000 ? 1800 : 2000;
+    (function step(now) { if (el._run !== run) return; const p = Math.min((now - t0) / D, 1), v = Math.round(from + (end - from) * (1 - Math.pow(1 - p, 4)));
       el.textContent = v.toLocaleString() + suf; if (p < 1) requestAnimationFrame(step); })(t0);
   }), { threshold: [0, 0.6] });
   document.querySelectorAll("[data-count]").forEach(el => counter.observe(el));
