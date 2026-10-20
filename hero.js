@@ -127,12 +127,12 @@ for (let i = 0; i < (mobile ? 18 : 34); i++) {
 // ---------- title as a plane inside the scene so mountains can pass in front of it ----------
 let titleMesh;
 async function makeTitle() {
-  try { await document.fonts.load('300 200px "Cormorant Garamond"'); } catch (e) {}
+  try { await Promise.all([document.fonts.load('400 200px "Instrument Serif"'), document.fonts.load('italic 400 200px "Instrument Serif"')]); } catch (e) {}
   const c = document.createElement("canvas"); c.width = 2400; c.height = 1100; const g = c.getContext("2d");
   g.textAlign = "center"; g.textBaseline = "alphabetic";
-  g.font = '300 400px "Cormorant Garamond", Georgia, serif'; g.fillStyle = "#ffffff"; g.shadowColor = "rgba(20,8,40,.45)"; g.shadowBlur = 60;
-  g.fillText("BEYOND", 1200, 470);
-  g.font = 'italic 300 330px "Cormorant Garamond", Georgia, serif'; g.fillStyle = "#ffd98a";
+  g.font = '400 430px "Instrument Serif", Georgia, serif'; g.fillStyle = "#ffffff"; g.shadowColor = "rgba(20,8,40,.45)"; g.shadowBlur = 60;
+  g.fillText("Beyond", 1200, 470);
+  g.font = 'italic 400 360px "Instrument Serif", Georgia, serif'; g.fillStyle = "#ffd98a";
   g.fillText("the ridge", 1200, 860);
   const t = new THREE.CanvasTexture(c); t.anisotropy = 8; t.colorSpace = THREE.SRGBColorSpace;
   titleMesh = new THREE.Mesh(new THREE.PlaneGeometry(78, 78 * 1100 / 2400),

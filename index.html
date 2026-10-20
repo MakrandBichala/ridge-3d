@@ -1,114 +1,248 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Parallax Hero</title>
+<title>Ridge — Slow treks in the Himalaya</title>
+<meta name="description" content="Small-group treks in Nepal, walked slowly with guides who live in the valleys.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-tone="ink">
 
+<!-- Floating island nav -->
 <nav class="nav" id="nav">
-  <div class="logo">Ridge</div>
-  <button class="menu-btn" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
-  <ul id="menu"><li><a href="#journey">Journey</a></li><li><a href="#treks">Treks</a></li><li><a href="#stories">Stories</a></li><li><a class="cta" href="#book">Book<i>→</i></a></li></ul>
+  <a class="logo" href="#hero">Ridge</a>
+  <ul id="menu">
+    <li><a href="#journey">Journey</a></li>
+    <li><a href="#treks">Treks</a></li>
+    <li><a href="#seasons">Seasons</a></li>
+    <li><a href="#stories">Stories</a></li>
+  </ul>
+  <a class="btn btn-sm" href="#book"><span>Book</span><i><svg viewBox="0 0 16 16"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></i></a>
+  <button class="menu-btn" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><span></span><span></span></button>
 </nav>
 
-<section class="hero" id="hero">
+<!-- Mobile menu sheet -->
+<div class="sheet" id="sheet" aria-hidden="true">
+  <ol>
+    <li><a href="#journey"><small>I</small>Journey</a></li>
+    <li><a href="#treks"><small>III</small>Treks</a></li>
+    <li><a href="#seasons"><small>V</small>Seasons</a></li>
+    <li><a href="#stories"><small>VI</small>Stories</a></li>
+    <li><a href="#book"><small>VII</small>Book</a></li>
+  </ol>
+  <p class="mono">28°31′N 83°52′E · Pokhara, Nepal</p>
+</div>
+
+<!-- Altimeter: climbs to the summit section, then walks you back down -->
+<aside class="alti" id="alti" aria-hidden="true">
+  <span class="mono alti-label" id="alti-ch">Pokhara</span>
+  <div class="alti-track"><i id="alti-dot"></i></div>
+  <span class="alti-num"><b id="alti-num">1,070</b><small>m</small></span>
+</aside>
+
+<section class="hero" id="hero" data-tone="ink" data-alt="1070" data-ch="Pokhara">
   <div class="stage">
     <canvas id="hero3d"></canvas>
     <div class="stage-fade"></div>
-    <div class="hint">↓ Scroll</div>
+    <div class="hero-meta mono">
+      <span>28°31′N<br>83°52′E</span>
+      <span class="hero-cue">Scroll to begin the ascent<i></i></span>
+      <span class="r">Small-group treks<br>Since 2014</span>
+    </div>
   </div>
 </section>
 
-<section class="plain left first" id="journey">
-  <div class="scene3d reveal" id="scene3d" style="--d:.3s"></div>
-  <p class="eyebrow reveal">01 — The Journey</p>
-  <h2 class="reveal" style="--d:.1s">Every climb starts in the <em>quiet</em> before dawn.</h2>
-  <p class="lead reveal" style="--d:.2s">We design slow, deliberate experiences for people who would rather take the long way up. No shortcuts, no noise, just the view at the end.</p>
+<!-- I. Journey -->
+<section class="sec split" id="journey" data-tone="ink" data-alt="1070" data-ch="I · The Journey">
+  <div class="split-text">
+    <p class="tag rv">Chapter I — The Journey</p>
+    <h2 class="display">
+      <span class="ln"><span>Every climb</span></span>
+      <span class="ln"><span>starts in the <em>quiet</em></span></span>
+      <span class="ln"><span>before dawn.</span></span>
+    </h2>
+    <p class="lead rv" style="--d:.25s">We design slow, deliberate journeys for people who would rather take the long way up. No shortcuts, no noise, just the view at the end.</p>
+  </div>
+  <figure class="frame rv" style="--d:.2s">
+    <div class="frame-core"><div class="scene3d" id="scene3d"></div></div>
+    <figcaption class="mono"><span>Fig. 01 — Annapurna Sanctuary, trail traced by hand</span><span>Drag to turn</span></figcaption>
+  </figure>
 </section>
 
-<section class="plain alt right">
-  <p class="eyebrow reveal">02 — What We Do</p>
-  <h2 class="reveal" style="--d:.1s">Three ways to reach the <em>summit</em>.</h2>
-  <div class="cards">
-    <article class="card reveal" style="--d:.1s"><span>01</span><h3>Guided Treks</h3><p>Small groups, local guides and routes that avoid the crowds.</p></article>
-    <article class="card reveal" style="--d:.25s"><span>02</span><h3>Night Camps</h3><p>Sleep above the clouds with warm gear and a sky full of stars.</p></article>
-    <article class="card reveal" style="--d:.45s"><span>03</span><h3>Photo Expeditions</h3><p>Reach the best light at the best hour, every single time.</p></article>
+<!-- Manifesto: one quiet, centred pause -->
+<section class="sec manifesto" data-tone="paper" data-alt="1800" data-ch="Ghorepani">
+  <p class="tag rv">Why we walk</p>
+  <p class="pause rv" style="--d:.15s">We don’t sell summits.<br><em>We walk.</em></p>
+  <ul class="tenets mono rv" style="--d:.3s"><li>Small groups</li><li>Local guides</li><li>No shortcuts</li></ul>
+</section>
+
+<!-- II. Ways up -->
+<section class="sec ways" id="ways" data-tone="paper" data-alt="2630" data-ch="II · Ways Up">
+  <header class="sec-head">
+    <p class="tag rv">Chapter II — Ways Up</p>
+    <h2 class="display">
+      <span class="ln"><span>Three ways to</span></span>
+      <span class="ln"><span>reach the <em>summit</em>.</span></span>
+    </h2>
+  </header>
+  <div class="cascade">
+    <article class="shell way rv" style="--d:.05s; --r:-2deg">
+      <div class="core">
+        <span class="roman">I</span>
+        <svg class="ico" viewBox="0 0 48 48"><path d="M4 40 24 8l20 32ZM24 8v32M18 40l6-12 6 12"/></svg>
+        <h3>Guided Treks</h3>
+        <p>Small groups, local guides and routes that avoid the crowds.</p>
+        <span class="mono meta">6 trekkers per guide</span>
+      </div>
+    </article>
+    <article class="shell way rv" style="--d:.2s; --r:1.5deg">
+      <div class="core">
+        <span class="roman">II</span>
+        <svg class="ico" viewBox="0 0 48 48"><path d="M30 8a16 16 0 1 0 10 28A14 14 0 0 1 30 8Z"/><path d="M38 10v4M36 12h4M42 22v2M41 23h2"/></svg>
+        <h3>Night Camps</h3>
+        <p>Sleep above the clouds with warm gear and a sky full of stars.</p>
+        <span class="mono meta">Above 4,000 m</span>
+      </div>
+    </article>
+    <article class="shell way rv" style="--d:.35s; --r:-1deg">
+      <div class="core">
+        <span class="roman">III</span>
+        <svg class="ico" viewBox="0 0 48 48"><rect x="5" y="14" width="38" height="26" rx="4"/><circle cx="24" cy="27" r="8"/><path d="M17 14l3-5h8l3 5"/></svg>
+        <h3>Photo Expeditions</h3>
+        <p>Reach the best light at the best hour, every single time.</p>
+        <span class="mono meta">Golden hour, planned</span>
+      </div>
+    </article>
   </div>
 </section>
 
-<section class="plain dark center" id="numbers">
-  <p class="eyebrow reveal">03 — By the Numbers</p>
+<!-- Numbers -->
+<section class="sec numbers" id="numbers" data-tone="paper" data-alt="3200" data-ch="Deurali">
   <div class="stats">
-    <div class="reveal" style="--d:.05s"><b data-count="5364">0</b><h4>Metres at Everest Base Camp</h4><p>Our highest camp, reached on day eight with rest days built in to adjust to the thin air.</p></div>
-    <div class="reveal" style="--d:.2s"><b data-count="12">0</b><h4>Routes mapped by hand</h4><p>Walked, timed and checked every season by guides who live in the valleys.</p></div>
-    <div class="reveal" style="--d:.35s"><b data-count="98" data-suffix="%">0</b><h4>Of groups reach the summit</h4><p>Small groups, steady pacing and a guide for every six trekkers.</p></div>
+    <div class="rv" style="--d:.05s"><b><span data-count="5364">0</span><small>m</small></b><h4 class="mono">Our highest camp</h4><p>Everest Base Camp, reached on day eight with rest days built in to adjust to the thin air.</p></div>
+    <div class="rv" style="--d:.2s"><b><span data-count="12">0</span></b><h4 class="mono">Routes mapped by hand</h4><p>Walked, timed and checked every season by guides who live in the valleys.</p></div>
+    <div class="rv" style="--d:.35s"><b><span data-count="98">0</span><small>%</small></b><h4 class="mono">Groups reach the top</h4><p>Small groups, steady pacing and a guide for every six trekkers.</p></div>
   </div>
 </section>
 
-<section class="plain dark left" id="treks">
-  <p class="eyebrow reveal">04 — The Treks</p>
-  <h2 class="reveal" style="--d:.1s">Choose your <em>ridge</em>.</h2>
-  <ul class="treks" style="border-top:1px solid rgba(244,241,234,.14)">
-    <li class="trek reveal" style="--x:-90px"><i class="glow"></i><i class="rule"></i><span class="n">01</span><div class="tn"><h3>Annapurna Sanctuary</h3><small>Nepal · Teahouse trek</small></div><span class="m">9 days</span><span class="m">4,130 m</span><span class="m lvl">Moderate</span><span class="go">→</span></li>
-    <li class="trek reveal" style="--x:90px"><i class="glow"></i><i class="rule"></i><span class="n">02</span><div class="tn"><h3>Everest Base Camp</h3><small>Nepal · Teahouse trek</small></div><span class="m">12 days</span><span class="m">5,364 m</span><span class="m lvl">Challenging</span><span class="go">→</span></li>
-    <li class="trek reveal" style="--x:-90px"><i class="glow"></i><i class="rule"></i><span class="n">03</span><div class="tn"><h3>Langtang Valley</h3><small>Nepal · Quiet valley</small></div><span class="m">7 days</span><span class="m">3,870 m</span><span class="m lvl">Easy</span><span class="go">→</span></li>
-    <li class="trek reveal" style="--x:90px"><i class="glow"></i><i class="rule"></i><span class="n">04</span><div class="tn"><h3>Upper Mustang</h3><small>Nepal · Hidden kingdom</small></div><span class="m">10 days</span><span class="m">3,840 m</span><span class="m lvl">Moderate</span><span class="go">→</span></li>
+<!-- III. Treks -->
+<section class="sec treks-sec" id="treks" data-tone="ink" data-alt="4130" data-ch="III · The Treks">
+  <header class="sec-head row">
+    <div>
+      <p class="tag rv">Chapter III — The Treks</p>
+      <h2 class="display"><span class="ln"><span>Choose your <em>ridge</em>.</span></span></h2>
+    </div>
+    <p class="lead rv" style="--d:.2s">Four routes, each walked slowly. Hover a route to see its ridgeline.</p>
+  </header>
+  <ul class="atlas">
+    <li class="trek rv" data-seed="3" data-peak="4130"><span class="mono n">01</span><div class="tn"><h3>Annapurna Sanctuary</h3><svg class="mini" viewBox="0 0 300 90"></svg></div><span class="mono">Nepal · Teahouse</span><span class="mono">9 days</span><span class="mono">4,130 m</span><span class="mono lvl">Moderate</span></li>
+    <li class="trek rv" data-seed="7" data-peak="5364"><span class="mono n">02</span><div class="tn"><h3>Everest Base Camp</h3><svg class="mini" viewBox="0 0 300 90"></svg></div><span class="mono">Nepal · Teahouse</span><span class="mono">12 days</span><span class="mono">5,364 m</span><span class="mono lvl">Challenging</span></li>
+    <li class="trek rv" data-seed="11" data-peak="3870"><span class="mono n">03</span><div class="tn"><h3>Langtang Valley</h3><svg class="mini" viewBox="0 0 300 90"></svg></div><span class="mono">Nepal · Quiet valley</span><span class="mono">7 days</span><span class="mono">3,870 m</span><span class="mono lvl">Easy</span></li>
+    <li class="trek rv" data-seed="19" data-peak="3840"><span class="mono n">04</span><div class="tn"><h3>Upper Mustang</h3><svg class="mini" viewBox="0 0 300 90"></svg></div><span class="mono">Nepal · Hidden kingdom</span><span class="mono">10 days</span><span class="mono">3,840 m</span><span class="mono lvl">Moderate</span></li>
   </ul>
+  <div class="peek" id="peek" aria-hidden="true"><div class="peek-core"><svg viewBox="0 0 300 90"><path id="peek-path"/></svg><p class="mono"><span id="peek-name"></span><span id="peek-alt"></span></p></div></div>
 </section>
 
-<section class="plain dark right" id="climb">
-  <p class="eyebrow reveal">05 — Day by Day</p>
-  <h2 class="reveal" style="--d:.1s">Annapurna Sanctuary, <em>in nine days</em>.</h2>
-  <div class="profile reveal" style="--d:.2s"><svg id="elev" viewBox="0 0 1000 340" preserveAspectRatio="xMidYMid meet"></svg></div>
+<!-- IV. Summit: the climb, day by day -->
+<section class="sec climb" id="climb" data-tone="snow" data-alt="5364" data-ch="IV · Summit">
+  <header class="sec-head row">
+    <div>
+      <p class="tag rv">Chapter IV — Day by Day</p>
+      <h2 class="display">
+        <span class="ln"><span>Annapurna Sanctuary,</span></span>
+        <span class="ln"><span><em>in nine days</em>.</span></span>
+      </h2>
+    </div>
+    <dl class="facts rv" style="--d:.2s">
+      <div><dt class="mono">Highest</dt><dd>4,130 m</dd></div>
+      <div><dt class="mono">Nights</dt><dd>8 teahouses</dd></div>
+      <div><dt class="mono">Walking</dt><dd>5–7 h a day</dd></div>
+    </dl>
+  </header>
+  <div class="profile rv" style="--d:.15s"><svg id="elev" viewBox="0 0 1000 340" preserveAspectRatio="xMidYMid meet"></svg></div>
 </section>
 
-<section class="plain dark left" id="stories">
-  <p class="eyebrow reveal">06 — Stories</p>
-  <h2 class="reveal" style="--d:.1s">Told by those who <em>climbed</em>.</h2>
+<!-- V. Seasons -->
+<section class="sec seasons" id="seasons" data-tone="paper" data-alt="3700" data-ch="V · Seasons">
+  <header class="sec-head">
+    <p class="tag rv">Chapter V — When to Go</p>
+    <h2 class="display"><span class="ln"><span>The mountain keeps</span></span><span class="ln"><span>its own <em>calendar</em>.</span></span></h2>
+  </header>
+  <div class="months rv" aria-hidden="true">
+    <i class="w"></i><i class="w"></i><i class="s"></i><i class="s"></i><i class="s"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="a"></i><i class="a"></i><i class="a"></i><i class="w"></i>
+    <span class="mono">J</span><span class="mono">F</span><span class="mono">M</span><span class="mono">A</span><span class="mono">M</span><span class="mono">J</span><span class="mono">J</span><span class="mono">A</span><span class="mono">S</span><span class="mono">O</span><span class="mono">N</span><span class="mono">D</span>
+  </div>
+  <div class="season-grid">
+    <article class="season rv" style="--d:.05s"><span class="mono">Mar — May</span><h3>Spring</h3><p>Rhododendrons in bloom and long, warm days on the trail.</p><span class="mono badge">Open</span></article>
+    <article class="season rv" style="--d:.15s"><span class="mono">Jun — Aug</span><h3>Monsoon</h3><p>We rest. The trails wash out and the valleys turn deep green.</p><span class="mono badge off">Closed</span></article>
+    <article class="season rv" style="--d:.25s"><span class="mono">Sep — Nov</span><h3>Autumn</h3><p>The clearest skies of the year. Peaks sharp from dawn to dusk.</p><span class="mono badge best">Best</span></article>
+    <article class="season rv" style="--d:.35s"><span class="mono">Dec — Feb</span><h3>Winter</h3><p>Quiet, cold and still. Lower routes only, with almost no one else.</p><span class="mono badge">Low routes</span></article>
+  </div>
+</section>
+
+<!-- Interlude: a guide's voice -->
+<section class="sec interlude" data-tone="ink" data-alt="2874" data-ch="Chhomrong">
+  <blockquote class="rv">
+    <p>“The mountain decides the pace. <em>We just listen.</em>”</p>
+    <cite class="mono">Pemba Sherpa — lead guide since 2009</cite>
+  </blockquote>
+</section>
+
+<!-- VI. Stories -->
+<section class="sec stories" id="stories" data-tone="ink" data-alt="2170" data-ch="VI · Stories">
+  <header class="sec-head">
+    <p class="tag rv">Chapter VI — Stories</p>
+    <h2 class="display"><span class="ln"><span>Told by those</span></span><span class="ln"><span>who <em>climbed</em>.</span></span></h2>
+  </header>
   <div class="quotes">
-    <blockquote class="reveal" style="--d:.1s"><p>“Our guide knew every stone on the path. I have never felt so looked after, or so small in the best way.”</p><cite>Maya R. · Annapurna</cite></blockquote>
-    <blockquote class="reveal" style="--d:.3s"><p>“Sunrise at base camp was worth every step. The whole trip felt calm, never rushed.”</p><cite>Daniel K. · Everest</cite></blockquote>
-    <blockquote class="reveal" style="--d:.5s"><p>“Quiet trails, warm teahouses, honest people. It reset something in me.”</p><cite>Aiko T. · Langtang</cite></blockquote>
+    <blockquote class="q q1 rv" style="--d:.05s"><p>“Our guide knew every stone on the path. I have never felt so looked after, or so small in the best way.”</p><cite class="mono">Maya R. · Annapurna</cite></blockquote>
+    <blockquote class="q q2 rv" style="--d:.2s"><p>“Sunrise at base camp was worth every step. The whole trip felt calm, never rushed.”</p><cite class="mono">Daniel K. · Everest</cite></blockquote>
+    <blockquote class="q q3 rv" style="--d:.35s"><p>“Quiet trails, warm teahouses, honest people. It reset something in me.”</p><cite class="mono">Aiko T. · Langtang</cite></blockquote>
   </div>
 </section>
 
-<section class="plain dark center" id="book">
-  <p class="eyebrow reveal">07 — Begin</p>
-  <h2 class="reveal" style="--d:.1s">Ready when <em>you</em> are.</h2>
-  <p class="lead reveal" style="--d:.2s">Tell us where and when. We will reply within a day with a route, a price and a plan.</p>
-  <form class="book reveal" id="bookform" style="--d:.3s">
-    <label>Your name<input required name="name" autocomplete="name"></label>
-    <label>Email<input required type="email" name="email" autocomplete="email"></label>
-    <label>Trek<select name="trek"><option>Annapurna Sanctuary</option><option>Everest Base Camp</option><option>Langtang Valley</option><option>Upper Mustang</option></select></label>
-    <label>Month<select name="month"><option>March</option><option>April</option><option>May</option><option>October</option><option>November</option></select></label>
-    <button type="submit"><span>Request a plan</span><i>→</i></button>
-    <p class="thanks" id="thanks" hidden>Thank you. We will be in touch within a day.</p>
-  </form>
+<!-- VII. Book -->
+<section class="sec book-sec" id="book" data-tone="ink" data-alt="1780" data-ch="VII · Begin">
+  <div class="book-wrap">
+    <div class="book-intro">
+      <p class="tag rv">Chapter VII — Begin</p>
+      <h2 class="display"><span class="ln"><span>Ready when</span></span><span class="ln"><span><em>you</em> are.</span></span></h2>
+      <p class="lead rv" style="--d:.2s">Tell us where and when. We reply within a day with a route, a price and a plan.</p>
+    </div>
+    <div class="shell rv" style="--d:.25s">
+      <form class="core book" id="bookform">
+        <label>Your name<input required name="name" autocomplete="name"></label>
+        <label>Email<input required type="email" name="email" autocomplete="email"></label>
+        <label>Trek<select name="trek"><option>Annapurna Sanctuary</option><option>Everest Base Camp</option><option>Langtang Valley</option><option>Upper Mustang</option></select></label>
+        <label>Month<select name="month"><option>March</option><option>April</option><option>May</option><option>October</option><option>November</option></select></label>
+        <button class="btn" type="submit"><span>Request a plan</span><i><svg viewBox="0 0 16 16"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></i></button>
+        <p class="thanks" id="thanks" hidden>Thank you. We will be in touch within a day.</p>
+      </form>
+    </div>
+  </div>
 </section>
 
-<footer class="foot">
-  <div class="foot-top">
-    <div class="logo">Ridge</div>
-    <ul><li><a href="#journey">Journey</a></li><li><a href="#treks">Treks</a></li><li><a href="#stories">Stories</a></li><li><a href="#book">Book</a></li></ul>
-    <p>bichalamak30@gmail.com</p>
-  </div>
+<footer class="foot" data-tone="ink" data-alt="1070" data-ch="Pokhara">
+  <p class="mono foot-note rv">You are back at 1,070 m. Pokhara, Nepal.</p>
   <svg class="wordmark" id="wordmark" viewBox="0 0 1000 300" aria-hidden="true">
     <defs>
       <linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1000" y2="0">
-        <stop offset="0" stop-color="#e6c27a" stop-opacity="0"/><stop offset=".4" stop-color="#e6c27a" stop-opacity="0"/>
-        <stop offset=".5" stop-color="#fff1c9" stop-opacity="1"/><stop offset=".6" stop-color="#e6c27a" stop-opacity="0"/><stop offset="1" stop-color="#e6c27a" stop-opacity="0"/>
-        <animateTransform attributeName="gradientTransform" type="translate" from="-1100 0" to="1100 0" dur="9s" repeatCount="indefinite"/>
+        <stop offset="0" stop-color="#d9b26f" stop-opacity="0"/><stop offset=".4" stop-color="#d9b26f" stop-opacity="0"/>
+        <stop offset=".5" stop-color="#fff1c9" stop-opacity="1"/><stop offset=".6" stop-color="#d9b26f" stop-opacity="0"/><stop offset="1" stop-color="#d9b26f" stop-opacity="0"/>
+        <animateTransform attributeName="gradientTransform" type="translate" from="-1100 0" to="1100 0" dur="12s" repeatCount="indefinite"/>
       </linearGradient>
     </defs>
-    <text class="wm wm-base" x="500" y="248">RIDGE</text>
-    <text class="wm wm-shine" x="500" y="248">RIDGE</text>
+    <text class="wm wm-base" x="500" y="250">Ridge</text>
+    <text class="wm wm-shine" x="500" y="250">Ridge</text>
   </svg>
-  <p class="fine">© 2026 Ridge Expeditions. Demo content.</p>
+  <div class="foot-row">
+    <ul><li><a href="#journey">Journey</a></li><li><a href="#treks">Treks</a></li><li><a href="#seasons">Seasons</a></li><li><a href="#stories">Stories</a></li><li><a href="#book">Book</a></li></ul>
+    <a class="mail" href="mailto:bichalamak30@gmail.com">bichalamak30@gmail.com</a>
+    <p class="mono">© 2026 Ridge Expeditions · Demo content</p>
+  </div>
 </footer>
 
 <script src="main.js"></script>
