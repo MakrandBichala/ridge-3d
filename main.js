@@ -1,3 +1,6 @@
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+window.scrollTo(0, 0);
   const nav = document.getElementById("nav"), hero = document.getElementById("hero");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   // fade the last bit of the hero into the dark section below as the scroll nears the end
