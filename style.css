@@ -1,6 +1,6 @@
   * { margin: 0; box-sizing: border-box; }
   :root { --gap: clamp(8rem, 22vh, 14rem); --inner: clamp(4rem, 9vh, 7rem); }
-  html { scroll-behavior: smooth; } html, body { background: #0b0b14; font-family: "Helvetica Neue", Arial, sans-serif; }
+  html { scroll-behavior: smooth; } html, body { overflow-x: clip; max-width: 100%; } html, body { background: #0b0b14; font-family: "Helvetica Neue", Arial, sans-serif; }
 
   /* Hero: tall wrapper, sticky stage inside, so layers animate while you scroll */
   .hero { height: 220vh; position: relative; }
@@ -24,8 +24,8 @@
   .title p { margin-top: 2vh; color: #fff; font-size: clamp(.8rem, 1.6vw, 1.3rem); letter-spacing: .5em; text-transform: uppercase; }
 
   .hint { position: absolute; bottom: 3vh; left: 0; right: 0; text-align: center; color: #fff;
-          letter-spacing: .3em; font-size: .75rem; text-transform: uppercase; z-index: 10; animation: bob 1.6s infinite; }
-  @keyframes bob { 50% { transform: translateY(8px); } }
+          letter-spacing: .3em; font-size: .75rem; text-transform: uppercase; z-index: 10; opacity: .7; animation: bob 4s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(4px); } }
 
 
   #hero3d { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
@@ -42,16 +42,16 @@
   /* "Book" is the call to action: filled gold pill, arrow slides in on hover */
   .nav a.cta { display: inline-flex; align-items: center; gap: 0; padding: .65rem 1.3rem; border-radius: 999px; background: #e6c27a; color: #14120f; font-weight: 500;
                box-shadow: 0 6px 20px -8px rgba(230,194,122,.7);
-               transition: background .6s cubic-bezier(.22,.7,.2,1), gap .6s cubic-bezier(.22,.7,.2,1), box-shadow .6s cubic-bezier(.22,.7,.2,1), transform .6s cubic-bezier(.22,.7,.2,1); }
-  .nav a.cta i { font-style: normal; display: inline-block; width: 0; opacity: 0; overflow: hidden; transition: width .6s cubic-bezier(.22,.7,.2,1), opacity .6s; }
+               transition: background .9s cubic-bezier(.22,.7,.2,1), gap .9s cubic-bezier(.22,.7,.2,1), box-shadow .9s cubic-bezier(.22,.7,.2,1), transform .9s cubic-bezier(.22,.7,.2,1); }
+  .nav a.cta i { font-style: normal; display: inline-block; width: 0; opacity: 0; overflow: hidden; transition: width .9s cubic-bezier(.22,.7,.2,1), opacity .9s; }
   .nav a.cta:hover { color: #14120f; background: #f3d898; gap: .6rem; transform: translateY(-1px); box-shadow: 0 10px 26px -8px rgba(230,194,122,.9); }
   .nav a.cta:hover i { width: 1rem; opacity: 1; }
 
   /* Content sections: alternate left / right, soft tonal edges */
   body { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; }
   .plain { position: relative; z-index: 3; padding: calc(var(--gap) / 2) 9vw; background: #f4f1ea; color: #14120f;
-           display: flex; flex-direction: column; --x: -90px; align-items: flex-start; text-align: left; }
-  .plain.right { --x: 90px; align-items: flex-end; text-align: right; }
+           display: flex; flex-direction: column; --x: -36px; align-items: flex-start; text-align: left; }
+  .plain.right { --x: 36px; align-items: flex-end; text-align: right; }
   /* Hero night -> pre-dawn mauve -> warm blush -> cream, so the night sky melts into the page */
   .plain.first { padding-top: 58vh; min-height: calc(58vh + min(78vh, 720px) + var(--gap) / 2);
     background: linear-gradient(#02020a 0, #0e0d24 6vh, #2b2144 16vh, #6d4a65 28vh, #c79a88 42vh, #ecd9c8 54vh, #f4f1ea 66vh); }
@@ -90,32 +90,32 @@
   /* hairline between rows; a gold one draws across it on hover */
   .trek::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(244,241,234,.14); }
   .trek .rule { position: absolute; left: 0; bottom: 0; height: 1px; width: 100%; background: #e6c27a; transform: scaleX(0); transform-origin: left; z-index: 1;
-                transition: transform 1.1s cubic-bezier(.22,.7,.2,1); }
+                transition: transform 1.5s cubic-bezier(.22,.7,.2,1); }
   .trek .glow { position: absolute; inset: 0 -2.2rem; background: linear-gradient(90deg, rgba(230,194,122,.07), rgba(230,194,122,0) 85%); border-radius: 16px;
-                opacity: 0; transition: opacity .9s cubic-bezier(.22,.7,.2,1); pointer-events: none; }
-  .trek > *, .trek h3 { transition: opacity .8s cubic-bezier(.22,.7,.2,1), translate .9s cubic-bezier(.22,.7,.2,1), color .8s cubic-bezier(.22,.7,.2,1); }
+                opacity: 0; transition: opacity 1.3s cubic-bezier(.22,.7,.2,1); pointer-events: none; }
+  .trek > *, .trek h3 { transition: opacity 1.2s cubic-bezier(.22,.7,.2,1), translate 1.3s cubic-bezier(.22,.7,.2,1), color 1.2s cubic-bezier(.22,.7,.2,1); }
   .trek .n { color: #e6c27a; font-size: .8rem; letter-spacing: .2em; }
   .trek h3 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 300; font-size: clamp(1.9rem, 3.6vw, 3.2rem); line-height: 1.05; }
   .trek small { display: block; margin-top: .7rem; color: #8d877a; letter-spacing: .08em; }
   .trek .m { color: #c9c3b6; font-weight: 300; font-size: .95rem; }
   .trek .go { font-size: 1.6rem; color: #e6c27a; opacity: .3; }
   @media (hover: hover) {
-    .treks:hover .trek:not(:hover) > :not(.glow):not(.rule) { opacity: .38; }       /* hovered row stays bright, the others recede */
+    .treks:hover .trek:not(:hover) > :not(.glow):not(.rule) { opacity: .55; }       /* hovered row stays bright, the others recede */
     .trek:hover .glow { opacity: 1; } .trek:hover .rule { transform: scaleX(1); }
-    .trek:hover h3 { translate: 18px 0; color: #fff; }
-    .trek:hover .n { translate: 6px 0; }
-    .trek:hover .m { translate: 4px 0; color: #f4f1ea; }
-    .trek:hover .go { translate: 10px 0; opacity: 1; }
+    .trek:hover h3 { translate: 10px 0; color: #fff; }
+    .trek:hover .n { translate: 3px 0; }
+    .trek:hover .m { translate: 2px 0; color: #f4f1ea; }
+    .trek:hover .go { translate: 6px 0; opacity: 1; }
   }
   @media (max-width: 860px) { .trek { grid-template-columns: 2rem 1fr auto; } .trek .m:nth-of-type(n+2), .trek .lvl { display: none; } .trek .go { display: none; } }
 
   .profile { width: 100%; margin-top: var(--inner); }
   #elev { width: 100%; height: auto; overflow: visible; }
   #elev .line { fill: none; stroke: #e6c27a; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-  #elev .area { fill: url(#fillg); opacity: 0; transition: opacity 2s ease 1.2s; }
+  #elev .area { fill: url(#fillg); opacity: 0; transition: opacity 2.6s ease 1.6s; }
   #elev.go .area { opacity: 1; }
-  #elev .pt { fill: #14120f; stroke: #e6c27a; stroke-width: 2; opacity: 0; transition: opacity .9s ease; }
-  #elev text { fill: #a39d90; font-size: 15px; font-family: Inter, sans-serif; opacity: 0; transition: opacity .9s ease; text-anchor: middle; }
+  #elev .pt { fill: #14120f; stroke: #e6c27a; stroke-width: 2; opacity: 0; transition: opacity 1.2s ease; }
+  #elev text { fill: #a39d90; font-size: 15px; font-family: Inter, sans-serif; opacity: 0; transition: opacity 1.2s ease; text-anchor: middle; }
   #elev text.alt { fill: #f4f1ea; font-size: 17px; }
   #elev .base { stroke: rgba(244,241,234,.12); }
 
@@ -127,20 +127,20 @@
   .book { display: grid; grid-template-columns: 1fr 1fr; gap: 2.2rem 2.5rem; width: min(760px, 100%); margin-top: var(--inner); text-align: left; }
   .book label { display: block; font-size: .7rem; letter-spacing: .25em; text-transform: uppercase; color: #8d877a; }
   .book input, .book select { width: 100%; margin-top: .8rem; padding: .7rem 0; background: transparent; border: 0; border-bottom: 1px solid rgba(244,241,234,.25);
-                              color: #f4f1ea; font: 300 1.2rem Inter, sans-serif; outline: none; border-radius: 0; transition: border-color .5s; }
+                              color: #f4f1ea; font: 300 1.2rem Inter, sans-serif; outline: none; border-radius: 0; transition: border-color .8s; }
   .book select option { color: #111; }
   .book input:focus, .book select:focus { border-color: #e6c27a; }
   .book button { grid-column: 1 / -1; justify-self: center; margin-top: 1rem; display: inline-flex; align-items: center; gap: 1rem; cursor: pointer;
                  padding: 1.1rem 2.4rem; border-radius: 999px; border: 1px solid #e6c27a; background: transparent; color: #e6c27a;
                  font: 500 .8rem Inter, sans-serif; letter-spacing: .25em; text-transform: uppercase;
-                 transition: background .6s cubic-bezier(.22,.7,.2,1), color .6s, gap .6s; }
+                 transition: background .9s cubic-bezier(.22,.7,.2,1), color .6s, gap .6s; }
   .book button:hover { background: #e6c27a; color: #14120f; gap: 1.6rem; }
   .thanks { grid-column: 1 / -1; text-align: center; color: #e6c27a; font-family: "Cormorant Garamond", serif; font-size: 1.6rem; }
   @media (max-width: 640px) { .book { grid-template-columns: 1fr; } }
 
   .foot { position: relative; z-index: 3; background: #14120f; color: #f4f1ea; padding: calc(var(--gap) / 2) 9vw 4vh; overflow: hidden; border-top: 1px solid rgba(244,241,234,.1); }
   .foot-top { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
-  .foot ul { display: flex; gap: 2rem; list-style: none; } .foot a { color: #a39d90; text-decoration: none; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; transition: color .5s; }
+  .foot ul { display: flex; gap: 2rem; list-style: none; } .foot a { color: #a39d90; text-decoration: none; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; transition: color .8s; }
   .foot a:hover { color: #e6c27a; } .foot-top p { color: #a39d90; font-size: .9rem; }
   .wordmark { display: block; width: 100%; height: auto; margin-top: 6vh; overflow: visible; }
   .wm { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 300; font-size: 305px; letter-spacing: -6px; text-anchor: middle; }
@@ -156,19 +156,19 @@
   /* Card hover: lifts, grows a touch, soft shadow + light that follows the cursor.
      Uses translate/scale (not transform) so it never fights the scroll reveal. */
   .card { position: relative; overflow: hidden; }
-  .card.reveal { transition: opacity 1.3s cubic-bezier(.22,.7,.2,1) var(--d,0s), transform 1.6s cubic-bezier(.22,.7,.2,1) var(--d,0s), filter 1.3s cubic-bezier(.22,.7,.2,1) var(--d,0s),
-                 translate .7s cubic-bezier(.22,.7,.2,1), scale .7s cubic-bezier(.22,.7,.2,1), box-shadow .7s cubic-bezier(.22,.7,.2,1), background-color .7s cubic-bezier(.22,.7,.2,1), border-color .7s cubic-bezier(.22,.7,.2,1); }
-  .card::before { content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity .7s cubic-bezier(.22,.7,.2,1); pointer-events: none;
+  .card.reveal { transition: opacity 1.9s cubic-bezier(.22,.7,.2,1) var(--d,0s), transform 2.2s cubic-bezier(.22,.7,.2,1) var(--d,0s), filter 1.9s cubic-bezier(.22,.7,.2,1) var(--d,0s),
+                 translate 1s cubic-bezier(.22,.7,.2,1), scale 1s cubic-bezier(.22,.7,.2,1), box-shadow 1s cubic-bezier(.22,.7,.2,1), background-color 1s cubic-bezier(.22,.7,.2,1), border-color 1s cubic-bezier(.22,.7,.2,1); }
+  .card::before { content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity 1s cubic-bezier(.22,.7,.2,1); pointer-events: none;
                   background: radial-gradient(420px circle at var(--mx,50%) var(--my,50%), rgba(181,84,58,.14), transparent 60%); }
-  .card h3, .card span { transition: translate .7s cubic-bezier(.22,.7,.2,1), color .7s cubic-bezier(.22,.7,.2,1); }
+  .card h3, .card span { transition: translate 1s cubic-bezier(.22,.7,.2,1), color 1s cubic-bezier(.22,.7,.2,1); }
   .card::after { content: ""; position: absolute; left: 2.4rem; bottom: 1.6rem; height: 1px; width: 0; background: #b5543a;
-                 transition: width .9s cubic-bezier(.22,.7,.2,1); }
+                 transition: width 1.2s cubic-bezier(.22,.7,.2,1); }
   @media (hover: hover) {
-    .card.in:hover { translate: 0 -14px; scale: 1.035; background-color: rgba(250,248,243,.95); border-color: rgba(181,84,58,.25);
+    .card.in:hover { translate: 0 -6px; scale: 1.012; background-color: rgba(250,248,243,.95); border-color: rgba(181,84,58,.25);
                      box-shadow: 0 30px 60px -25px rgba(60,35,20,.35), 0 12px 24px -16px rgba(60,35,20,.2); }
     .card:hover::before { opacity: 1; }
     .card:hover::after { width: calc(100% - 4.8rem); }
-    .card:hover h3 { translate: 0 -3px; }
+    .card:hover h3 { translate: 0 -2px; }
     .card:hover span { translate: 4px 0; }
   }
 
@@ -180,12 +180,32 @@
   @media (max-width: 860px) { .plain.first { min-height: 0; } .scene3d { position: relative; right: auto; top: auto; width: 100%; height: 60vh; order: 5; margin-top: 6vh; } }
 
   /* Reveal: drifts in from the side, un-blurs and fades. Long, gentle ease-out so nothing snaps. */
-  .reveal { opacity: 0; filter: blur(5px); transform: translate3d(var(--x), 18px, 0);
-            transition: opacity 1.3s cubic-bezier(.22,.7,.2,1) var(--d,0s),
-                        transform 1.6s cubic-bezier(.22,.7,.2,1) var(--d,0s),
-                        filter 1.3s cubic-bezier(.22,.7,.2,1) var(--d,0s);
+  .reveal { opacity: 0; filter: blur(3px); transform: translate3d(var(--x), 14px, 0);
+            transition: opacity 1.9s cubic-bezier(.22,.7,.2,1) var(--d,0s),
+                        transform 2.2s cubic-bezier(.22,.7,.2,1) var(--d,0s),
+                        filter 1.9s cubic-bezier(.22,.7,.2,1) var(--d,0s);
             }
   .reveal.in { opacity: 1; filter: blur(0); transform: none; }
   .reveal.reset, .wordmark.reset .wm { transition: none !important; }
   .reveal.done { filter: none; will-change: auto; }
   @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; filter: none; transform: none; transition: none; } }
+
+  /* Mobile nav: hamburger toggles a dropdown panel */
+  .menu-btn { display: none; width: 40px; height: 40px; padding: 0; background: none; border: 0; cursor: pointer; position: relative; color: inherit; }
+  .menu-btn span { position: absolute; left: 9px; right: 9px; height: 1.5px; background: currentColor; transition: transform .7s cubic-bezier(.22,.7,.2,1), opacity .5s; }
+  .menu-btn span:nth-child(1) { top: 12px; } .menu-btn span:nth-child(2) { top: 22px; }
+  .nav.open .menu-btn span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+  .nav.open .menu-btn span:nth-child(2) { transform: translateY(-5px) rotate(-45deg); }
+  @media (max-width: 760px) {
+    .menu-btn { display: block; width: 36px; height: 36px; }
+    .logo { font-size: .95rem; }
+    .nav ul { top: calc(100% + 8px); }
+    .nav ul { position: absolute; top: calc(100% + 10px); left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; padding: .6rem;
+              background: rgba(14,10,34,.94); border: 1px solid rgba(255,255,255,.14); border-radius: 22px;
+              opacity: 0; visibility: hidden; transform: translateY(-8px); pointer-events: none;
+              transition: opacity .6s cubic-bezier(.22,.7,.2,1), transform .8s cubic-bezier(.22,.7,.2,1), visibility 0s .8s; }
+    .nav.open ul { opacity: 1; visibility: visible; transform: none; pointer-events: auto; transition-delay: 0s; }
+    .nav ul a { display: block; padding: 1rem 1.2rem; font-size: .9rem; }
+    .nav ul a.cta { justify-content: center; margin-top: .4rem; }
+    .nav a.cta i { width: 1rem; opacity: 1; margin-left: .5rem; }
+  }

@@ -121,7 +121,7 @@ for (let i = 0; i < (mobile ? 18 : 34); i++) {
   const s = new THREE.Sprite(m); const sc = 40 + Math.random() * 70;
   s.scale.set(sc * 2.2, sc * 0.55, 1);
   s.position.set((Math.random() - 0.5) * 320, 26 + Math.random() * 38, -40 - Math.random() * 170);
-  s.userData.v = 0.6 + Math.random() * 1.1; clouds.push(s); scene.add(s);
+  s.userData.v = 0.25 + Math.random() * 0.45; clouds.push(s); scene.add(s);
 }
 
 // ---------- title as a plane inside the scene so mountains can pass in front of it ----------
@@ -170,10 +170,10 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const look = new THREE.Vector3();
 function placeCamera(p, t) {
   const e = p * p * (3 - 2 * p) * 0.35 + p * 0.65;                          // gentle ease along the flight
-  const z = lerp(52, -12, e), x = lerp(0, 8, e) + corridor(z) * 0.5 + smx * 3;
+  const z = lerp(52, -12, e), x = lerp(0, 8, e) + corridor(z) * 0.5 + smx * 1.5;
   const y = Math.max(lerp(14, 36, e) - smy * 1.5, heightAt(x, z) + 4.5);
   camera.position.set(x, y + Math.sin(t * 0.4) * 0.25, z);
-  look.set(lerp(2, 8, e) - smx * 2, lerp(36, 52, e), lerp(-90, -100, e));
+  look.set(lerp(2, 8, e) - smx * 1, lerp(36, 52, e), lerp(-90, -100, e));
   camera.lookAt(look);
 }
 
@@ -192,7 +192,7 @@ const clock = new THREE.Clock();
   const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
   target = Math.min(1, Math.max(0, scrollY / (hero.offsetHeight - innerHeight)));
   if (LOCK !== null) target = +LOCK;                                       // ?p=0.3 pins the flight for previews
-  prog += (target - prog) * Math.min(1, dt * 9);                             // short, soft catch-up
+  prog += (target - prog) * Math.min(1, dt * 6);                             // short, soft catch-up
   smx += (mx - smx) * Math.min(1, dt * 2.5); smy += (my - smy) * Math.min(1, dt * 2.5);
   grade(prog); placeCamera(prog, t);
   if (titleMesh) titleMesh.position.y = lerp(70, 30, prog * prog * (3 - 2 * prog));       // sinks into the range as you scroll

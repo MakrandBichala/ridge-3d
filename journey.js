@@ -35,7 +35,7 @@
   new GLTFLoader().load("assets/mountain.glb", g => { g.scene.traverse(o => { if (o.isMesh) o.material.flatShading = true; }); world.add(g.scene); });
 
   const ease = t => t * t * (3 - 2 * t);
-  const T_DRAW = 11, T_HOLD = 2.6, T_FADE = 2.2, T_GAP = 1.2, LOOP = T_DRAW + T_HOLD + T_FADE + T_GAP;
+  const T_DRAW = 11, T_HOLD = 4, T_FADE = 3, T_GAP = 3, LOOP = T_DRAW + T_HOLD + T_FADE + T_GAP;
 
   function resize() {
     const w = box.clientWidth, h = box.clientHeight; if (!w || !h) return;
@@ -57,7 +57,7 @@
     requestAnimationFrame(frame);
     const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
     if (!visible) return;
-    if (!dragging) { vel *= 0.95; rot += vel + (reduce ? 0 : dt * 0.24); tilt *= 0.97; }   // inertia, then the slow turn resumes
+    if (!dragging) { vel *= 0.95; rot += vel + (reduce ? 0 : dt * 0.16); tilt *= 0.97; }   // inertia, then the slow turn resumes
     world.rotation.y = rot; world.rotation.x = tilt;
     world.position.y = Math.sin(t * 0.8) * 0.04;                  // barely-there float
 

@@ -8,16 +8,19 @@ window.scrollTo(0, 0);
   addEventListener("scroll", stageFade, { passive: true }); stageFade();
 
   // Navbar: a smoothed value chases the scroll target, so it glides and settles softly
-  let navN = 0;
+  let navN = 0, navDirty = true;
+  addEventListener("resize", () => navDirty = true);
   function navTick() {
     const target = Math.min(scrollY / 300, 1);
-    if (navN === target) return requestAnimationFrame(navTick);     // settled: write nothing
-    navN += (target - navN) * 0.09;
+    if (navN === target && !navDirty) return requestAnimationFrame(navTick);
+    navDirty = false;
+    const sm = innerWidth <= 760;     // settled: write nothing
+    navN += (target - navN) * 0.065;
     if (Math.abs(target - navN) < 0.0005) navN = target;
     const n = navN, L = (a, b) => a + (b - a) * n;
-    nav.style.width = L(innerWidth, Math.min(680, innerWidth * 0.94)) + "px";
-    nav.style.top = L(0, 16) + "px";
-    nav.style.padding = `${L(22, 16)}px ${L(innerWidth * 0.04, 34)}px`;
+    nav.style.width = L(innerWidth, sm ? Math.min(340, innerWidth - 40) : Math.min(680, innerWidth * 0.94)) + "px";
+    nav.style.top = L(0, sm ? 12 : 16) + "px";
+    nav.style.padding = sm ? `${L(14, 8)}px ${L(20, 12)}px ${L(14, 8)}px ${L(20, 22)}px` : `${L(22, 16)}px ${L(innerWidth * 0.04, 34)}px`;
     nav.style.borderRadius = L(0, 999) + "px";
     nav.style.background = `rgba(14,10,34,${L(0, 0.82)})`;
         nav.style.borderColor = `rgba(255,255,255,${L(0, 0.18)})`;
@@ -31,7 +34,7 @@ window.scrollTo(0, 0);
     const el = e.target;
     if (!e.isIntersecting) { el._run = 0; el.textContent = "0"; return; }                    // left view: reset
     if (e.intersectionRatio < 0.6 || el._run) return;
-    const run = el._run = Math.random(), end = +el.dataset.count, suf = el.dataset.suffix || "", t0 = performance.now(), D = 2200;
+    const run = el._run = Math.random(), end = +el.dataset.count, suf = el.dataset.suffix || "", t0 = performance.now(), D = 3200;
     (function step(now) { if (el._run !== run) return; const p = Math.min((now - t0) / D, 1), v = Math.round(end * (1 - Math.pow(1 - p, 3)));
       el.textContent = v.toLocaleString() + suf; if (p < 1) requestAnimationFrame(step); })(t0);
   }), { threshold: [0, 0.6] });
@@ -57,8 +60,8 @@ window.scrollTo(0, 0);
       svg.querySelectorAll(".pt, text").forEach(n => { n.style.transition = "none"; n.style.opacity = 0; }); };
     const play = () => { playing = true; void svg.getBoundingClientRect();
       svg.querySelectorAll(".pt, text").forEach(n => { n.style.transition = ""; n.style.opacity = ""; });
-      svg.classList.add("go"); line.style.transition = "stroke-dashoffset 5.5s cubic-bezier(.45,.05,.3,1)"; line.style.strokeDashoffset = 0;
-      svg.querySelectorAll(".pt").forEach((c, i) => { const delay = 5500 * (i / (days.length - 1)) * 0.92;
+      svg.classList.add("go"); line.style.transition = "stroke-dashoffset 7s cubic-bezier(.45,.05,.3,1)"; line.style.strokeDashoffset = 0;
+      svg.querySelectorAll(".pt").forEach((c, i) => { const delay = 7000 * (i / (days.length - 1)) * 0.92;
         timers.push(setTimeout(() => { c.style.opacity = 1; const t = svg.querySelectorAll("text"); [t[i * 3], t[i * 3 + 1], t[i * 3 + 2]].forEach(n => n.style.opacity = 1); }, delay)); }); };
     new IntersectionObserver(es => { const e = es[0];
       if (!e.isIntersecting) { if (playing) reset(); } else if (e.intersectionRatio >= 0.35 && !playing) play();
@@ -91,3 +94,13 @@ window.scrollTo(0, 0);
   document.querySelectorAll(".reveal").forEach(el => { io.observe(el);
     el.addEventListener("transitionend", e => { if (e.propertyName === "transform" && el.classList.contains("in")) el.classList.add("done"); }); });
 
+
+
+  // Mobile menu: toggle, and close on link tap, outside tap, Escape or resize
+  const menuBtn = document.getElementById("menu-btn");
+  const setMenu = open => { nav.classList.toggle("open", open); menuBtn.setAttribute("aria-expanded", open); };
+  menuBtn.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
+  nav.querySelectorAll("ul a").forEach(a => a.addEventListener("click", () => setMenu(false)));
+  addEventListener("pointerdown", e => { if (!nav.contains(e.target)) setMenu(false); });
+  addEventListener("keydown", e => { if (e.key === "Escape") setMenu(false); });
+  addEventListener("resize", () => setMenu(false));
