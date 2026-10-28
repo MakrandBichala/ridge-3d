@@ -16,6 +16,8 @@ python3 -m http.server 8123   # then open http://localhost:8123
 
 Fonts and Three.js come from CDNs, so you need network access.
 
+Check (no tests): open the page, scroll top to bottom, and the browser console must stay clean; also try with reduced motion on. Code is on GitHub `MakrandBichala/ridge-3d` (no deploy set up).
+
 ## Architecture
 
 `index.html` holds all markup. Behaviour is split across three independent scripts, loaded at the bottom of the page:
