@@ -76,7 +76,7 @@ body.menu-open .sheet > p { opacity: 1; }
 /* ---------- Altimeter ---------- */
 .alti { position: fixed; left: 2rem; top: 50%; translate: 0 -50%; z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 1rem;
         color: var(--fg); mix-blend-mode: normal; transition: color 1.6s var(--e), opacity 1s var(--e); pointer-events: none; will-change: transform; }
-.alti-label { writing-mode: vertical-rl; rotate: 180deg; color: var(--mute); transition: color 1.6s var(--e), opacity .5s var(--e); white-space: nowrap; height: 8.5rem; text-align: end; }
+.alti-label { writing-mode: vertical-rl; rotate: 180deg; color: var(--mute); transition: color 1.6s var(--e), opacity .5s var(--e); white-space: nowrap; height: 11.5rem; text-align: end; }
 .alti-label.swap { opacity: 0; }
 .alti-track { position: relative; width: 1px; height: 22vh; background: var(--line); }
 .alti-track i { position: absolute; left: -3px; bottom: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
@@ -156,6 +156,9 @@ body.menu-open .sheet > p { opacity: 1; }
 .trek > span { color: var(--mute); transition: color 1.2s var(--e), opacity 1.2s var(--e); }
 .trek .n { color: var(--accent); }
 .trek .mini { display: none; }
+.trek:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+.trek.sel::after { transform: scaleX(1); } .trek.sel h3 { font-style: italic; } .trek.sel > span { color: var(--fg); }
+.trek-note { display: inline-block; margin-top: 1.8rem; color: var(--accent); transition: color 1.6s var(--e); }
 .trek::after { content: ""; position: absolute; left: 0; bottom: -1px; height: 1px; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 1.4s var(--e2); }
 @media (hover: hover) {
   .atlas:hover .trek:not(:hover) { opacity: .45; }
@@ -238,6 +241,9 @@ body.menu-open .sheet > p { opacity: 1; }
 .book select { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238f887b'/%3E%3C/svg%3E") right center no-repeat; }
 .book select option { color: #111; }
 .book input:focus, .book select:focus { border-color: var(--accent); }
+.book-trek { grid-column: 1 / -1; display: flex; flex-direction: column; gap: .35rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--line); color: var(--mute); }
+.book-trek b { font: 400 clamp(1.8rem, 3vw, 2.6rem)/1.05 var(--serif); color: var(--fg); }
+.book-trek span:last-child { color: var(--accent); }
 .book .btn { grid-column: 1 / -1; justify-self: start; margin-top: .6rem; }
 .thanks { grid-column: 1 / -1; font: italic 400 1.6rem var(--serif); color: var(--accent); }
 
