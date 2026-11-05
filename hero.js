@@ -190,7 +190,8 @@ const clock = new THREE.Clock();
   requestAnimationFrame(frame);
   if (!heroOn) return;
   const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
-  target = Math.min(1, Math.max(0, scrollY / (hero.offsetHeight - innerHeight)));
+  const span = hero.offsetHeight - innerHeight;                             // 0 while the page has no size yet: 0/0 would break the flight for good
+  target = span > 0 ? Math.min(1, Math.max(0, scrollY / span)) : 0;
   if (LOCK !== null) target = +LOCK;                                       // ?p=0.3 pins the flight for previews
   prog += (target - prog) * Math.min(1, dt * 6);                             // short, soft catch-up
   smx += (mx - smx) * Math.min(1, dt * 2.5); smy += (my - smy) * Math.min(1, dt * 2.5);

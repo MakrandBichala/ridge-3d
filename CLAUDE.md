@@ -30,7 +30,7 @@ Check (no tests): open the page, scroll top to bottom, and the browser console m
 
 - Sections drive the UI through data attributes in `index.html`:
   - `data-tone` (`ink`, `paper`, `snow`) is observed at the screen midline and sets `body[data-tone]`. CSS in `style.css` keys the page colours off it.
-  - `data-alt` (metres) and `data-ch` (chapter label) are the altimeter anchors. `main.js` interpolates altitude between consecutive anchors in DOM order. The page climbs to the summit section (5364 m) and descends afterwards, so section order matters. The altimeter dot hardcodes the range 1070–5364 m.
+  - `data-alt` (metres) and `data-ch` (chapter label) are the altimeter anchors. `main.js` interpolates altitude between consecutive anchors in DOM order. The page climbs to the summit section (5364 m) and descends afterwards, so section order matters. `data-hold` keeps the altimeter at that height for the whole section. The altimeter dot hardcodes the range 1400–5364 m.
 - The hero fades into the page through the CSS variable `--fade`. `main.js` sets it from scroll progress and `style.css` consumes it.
 - All three scripts honour `prefers-reduced-motion`. Keep that when adding animation.
 - Code style: compact, with brief comments explaining intent. Match it.

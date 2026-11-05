@@ -19,8 +19,10 @@ $$("[data-tone]").forEach(s => s !== document.body && toneIO.observe(s));
 // Altimeter: altitude is interpolated between section anchors, so the page climbs to the summit and back down
 const alti = { num: $("#alti-num"), ch: $("#alti-ch"), dot: $("#alti-dot"), track: $(".alti-track") };
 const stops = $$("[data-alt]");
-let anchors = [], target = 1070, shownAlt = 1070, shownTxt = "", lastT = performance.now();
-const measure = () => { anchors = stops.map(s => ({ y: s.getBoundingClientRect().top + scrollY, alt: +s.dataset.alt, ch: s.dataset.ch })); };
+let anchors = [], target = 1400, shownAlt = 1400, shownTxt = "", lastT = performance.now();
+const measure = () => { anchors = stops.flatMap(s => { const r = s.getBoundingClientRect(), a = { y: r.top + scrollY, alt: +s.dataset.alt, ch: s.dataset.ch };
+  return "hold" in s.dataset ? [a, { ...a, y: a.y + r.height }] : [a]; });   // data-hold: stay at this height for the whole section
+  anchors[0].y = innerHeight * 0.5; };                                    // the top of the page reads the first height exactly
 addEventListener("resize", measure); addEventListener("load", measure); measure();
 (function altTick(now) {
   requestAnimationFrame(altTick);
@@ -32,11 +34,11 @@ addEventListener("resize", measure); addEventListener("load", measure); measure(
   target = a.alt + (b.alt - a.alt) * t;
   shownAlt += (target - shownAlt) * (1 - Math.exp(-dt * 3.2));            // time-based easing: same feel at any frame rate
   if (Math.abs(target - shownAlt) < 0.5) shownAlt = target;
-  const txt = fmt(Math.round(shownAlt / 10) * 10);                         // steps of 10 m, so the digits never flicker
+  const txt = fmt(shownAlt === target ? shownAlt : Math.round(shownAlt / 10) * 10);   // steps of 10 m while moving so digits never flicker, exact once settled
   if (txt !== shownTxt) { alti.num.textContent = shownTxt = txt; }
   if (alti.ch.dataset.v !== a.ch) { alti.ch.dataset.v = a.ch; alti.ch.classList.add("swap");
     setTimeout(() => { alti.ch.textContent = a.ch; alti.ch.classList.remove("swap"); }, 500); }
-  alti.dot.style.transform = `translate3d(0, ${-(shownAlt - 1070) / (5364 - 1070) * alti.track.clientHeight}px, 0)`;
+  alti.dot.style.transform = `translate3d(0, ${-(shownAlt - 1400) / (5364 - 1400) * alti.track.clientHeight}px, 0)`;
 })(performance.now());
 
 // Mobile menu sheet
@@ -98,8 +100,8 @@ $$(".trek").forEach(t => {
 
 // Elevation profile: the line draws itself, then each stop appears in turn
 (function () {
-  const days = [["Pokhara", 1070], ["Ghorepani", 2874], ["Tadapani", 2630], ["Chomrong", 2170], ["Himalaya", 2920], ["M. Base Camp", 3700], ["Annapurna BC", 4130], ["Bamboo", 2310], ["Jhinu", 1780]];
-  const svg = $("#elev"), W = 1000, pad = 50, top = 70, bot = 270, max = 4400, min = 800, DRAW = 7000;
+  const days = [["Phakding", 2610], ["Namche", 3440], ["Rest day", 3440], ["Tengboche", 3860], ["Dingboche", 4410], ["Rest day", 4410], ["Lobuche", 4940], ["Base Camp", 5364], ["Pheriche", 4240], ["Namche", 3440], ["Lukla", 2860], ["Kathmandu", 1400]];
+  const svg = $("#elev"), W = 1000, pad = 50, top = 70, bot = 270, max = 5600, min = 800, DRAW = 7000;
   const X = i => pad + i * (W - 2 * pad) / (days.length - 1), Y = a => bot - (a - min) / (max - min) * (bot - top);
   const P = days.map((d, i) => [X(i), Y(d[1])]);
   let d = `M${P[0][0]} ${P[0][1]}`;
