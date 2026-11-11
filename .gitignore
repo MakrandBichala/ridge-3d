@@ -1,1 +1,4 @@
 .DS_Store
+
+# local Claude notes, never commit
+CLAUDE.md
